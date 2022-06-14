@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Graph from "./components/Graph";
+import TestData from "./components/TestData";
+import Home from "./pages/Home";
+import Vehiculo from "./pages/Vehiculo";
+import {data} from "./assets/fakedata";
 
 function App() {
+  // const populate = () => {
+  //   data.forEach(async (element) => {
+  //     const response = await fetch(API_URL, {
+  //       method: "POST",
+  //       mode: "cors",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Accept: "application/json",
+  //       },
+  //       body: JSON.stringify(element),
+  //     });
+  //     // const content = await response.json();
+  //   });
+  // };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* <Home /> */}
+      {/* <Graph /> */}
+      {/* <Vehiculo /> */}
     </div>
   );
 }
