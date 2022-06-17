@@ -1,6 +1,7 @@
 import React from "react";
 
-function Stats() {
+function Stats({data}) {
+  const {countEntradasAdelante, countEntradasAtras, countSalidas} = {...data};
   return (
     <div className="stats shadow my-5">
       <div className="stat">
@@ -19,9 +20,11 @@ function Stats() {
             ></path>
           </svg>
         </div>
-        <div className="stat-title">live</div>
-        <div className="stat-value text-primary">1400</div>
-        <div className="stat-desc">movilizados en tiempo real</div>
+        <div className="stat-title">movilizandose ahora</div>
+        <div className="stat-value text-primary">
+          {countEntradasAdelante + countEntradasAtras - countSalidas}
+        </div>
+        <div className="stat-desc">(tiempo real)</div>
       </div>
 
       <div className="stat">
@@ -41,8 +44,8 @@ function Stats() {
           </svg>
         </div>
         <div className="stat-title">no autorizados</div>
-        <div className="stat-value text-secondary">13</div>
-        <div className="stat-desc">Ingresos posible fraude</div>
+        <div className="stat-value text-secondary">{countEntradasAtras}</div>
+        <div className="stat-desc">(posible fraude)</div>
       </div>
 
       <div className="stat">
@@ -62,8 +65,10 @@ function Stats() {
           </svg>
         </div>
         <div className="stat-title">total movilizados</div>
-        <div className="stat-value text-primary">1400</div>
-        <div className="stat-desc">en el rango de fechas</div>
+        <div className="stat-value text-primary">
+          {countEntradasAtras + countEntradasAdelante}
+        </div>
+        <div className="stat-desc">(acumulado)</div>
       </div>
     </div>
   );
