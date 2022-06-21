@@ -1,8 +1,13 @@
+// 21.06 PENDIENTES
+// Basicamente solo queda el tema estético. A parte si se quiere, agregar un par de funcionalidades:
+// visualizar fraudes en la gráfica.
+
 import React, {useEffect, useState} from "react";
 import Navbar from "../components/Navbar";
 import Graph from "../components/Graph";
 import Stats from "../components/Stats";
 import DropdownVehiculos from "../components/DropdownVehiculos";
+import TablaVehiculo from "../components/TablaVehiculo";
 import {API_URL} from "../constants";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -19,18 +24,9 @@ function Dashboard() {
     pasajerosEntranPorHora: [],
     pasajerosSalenPorHora: [],
   });
+  const [noAutorizados, setNoAutorizados] = useState([]);
+  const [verReporte, setVerReporte] = useState(false);
 
-  const getHistorial = async () => {
-    const response = await fetch(API_URL + "/vehiculos/todos", {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const hist = await response.json();
-    setHistorial(hist);
-  };
   const getVehiculos = async () => {
     const response = await fetch(API_URL + "/vehiculos", {
       method: "GET",
@@ -53,7 +49,6 @@ function Dashboard() {
       },
     });
     const res = await response.json();
-    console.log(res);
     for (let i = 5; i < 23; i++) {
       if (
         res.pasajerosEntranPorHora.findIndex(
@@ -67,8 +62,21 @@ function Dashboard() {
       )
         res.pasajerosSalenPorHora.push({hora: i, pasajeros: 0});
     }
-    console.log(res);
     setDatosDia(res);
+  };
+
+  const getFraudes = async (fecha, id) => {
+    const params = `fecha=${fecha}&id=${id}`;
+    const response = await fetch(`${API_URL}/noautorizados/?${params}`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("getting frauds...");
+    const res = await response.json();
+    setNoAutorizados(res);
   };
 
   const queryVehiculo = (vehiculoId) => {
@@ -80,10 +88,17 @@ function Dashboard() {
     setFechaConsulta(date.getTime() / 1000);
   };
 
+  const checkVerReporte = () => {
+    if (!verReporte && !noAutorizados.length)
+      getFraudes(fechaConsulta, vehiculoConsulta);
+    setVerReporte(!verReporte);
+  };
+
   useEffect(() => {
     getVehiculos();
-    getPasajerosPorHora(fechaConsulta, "WTN002");
-  }, [fechaConsulta]);
+    getPasajerosPorHora(fechaConsulta, vehiculoConsulta);
+    getFraudes(fechaConsulta, vehiculoConsulta);
+  }, [fechaConsulta, vehiculoConsulta]);
 
   return (
     <div>
@@ -112,6 +127,18 @@ function Dashboard() {
       </div>
       <Stats data={datosDia} />
       <Graph data={datosDia} />
+      <div className="form-control">
+        <label className="label cursor-pointer w-32 mx-auto my-3">
+          <span className="label-text">Ver reporte</span>
+          <input
+            type="checkbox"
+            checked={verReporte}
+            className="checkbox checkbox-primary"
+            onChange={checkVerReporte}
+          />
+        </label>
+      </div>
+      {verReporte && <TablaVehiculo noAutorizados={noAutorizados} />}
     </div>
   );
 }
