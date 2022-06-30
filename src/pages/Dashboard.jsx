@@ -1,4 +1,6 @@
 // 21.06 PENDIENTES
+// Conflicto versiones. Recharts pide React 16 o menos y yo uso React 18. Esto no lo deja subir a netlify.
+// Si no se corre local sino desde Firebase cloud, genera error de cors...
 // Basicamente solo queda el tema estético. A parte si se quiere, agregar un par de funcionalidades:
 // visualizar fraudes en la gráfica.
 
@@ -74,7 +76,6 @@ function Dashboard() {
         "Content-Type": "application/json",
       },
     });
-    console.log("getting frauds...");
     const res = await response.json();
     setNoAutorizados(res);
   };
@@ -85,6 +86,12 @@ function Dashboard() {
   };
 
   const updateFecha = (date) => {
+    date.setHours(0, 0, 0, 0);
+    const d = new Date(0);
+    d.setUTCSeconds(date / 1000);
+    console.log(
+      "Updating search date to: " + d.toLocaleDateString() + "(" + date + ")"
+    );
     setFechaConsulta(date.getTime() / 1000);
   };
 
